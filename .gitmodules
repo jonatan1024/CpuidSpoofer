@@ -1,0 +1,4 @@
+[submodule "PluginTemplate"]
+	path = PluginTemplate
+	url = https://github.com/x64dbg/PluginTemplate
+	branch = master
