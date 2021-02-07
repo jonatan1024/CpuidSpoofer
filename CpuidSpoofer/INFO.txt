@@ -1,0 +1,2 @@
+pluginmain.cpp and pluginmain.h are direct copies from PluginTemplate/PluginTemplate
+plugin.h was copied and modified
