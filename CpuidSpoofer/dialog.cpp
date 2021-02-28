@@ -9,7 +9,7 @@
 std::wstring getWindowTextString(HWND hWnd) {
 	std::wstring text;
 	text.resize(GetWindowTextLengthW(hWnd));
-	GetWindowTextW(hWnd, (LPWSTR)text.data(), text.size() + 1);
+	GetWindowTextW(hWnd, (LPWSTR)text.data(), (int)text.size() + 1);
 	return text;
 }
 
@@ -19,6 +19,8 @@ void enableSetRegister(HWND hDialog, UINT set, UINT mask, UINT value, BOOL enabl
 	EnableWindow(GetDlgItem(hDialog, mask), enable);
 	EnableWindow(GetDlgItem(hDialog, value), enable);
 }
+
+#pragma warning( disable : 4002 )
 
 #define ENABLE_SET_INPUTS(register, enable) \
 	enableSetRegister(hDialog, IDC_SET_ ## register, IDC_SET_ ## register ## _MASK, IDC_SET_ ## register ## _VALUE, enable)
@@ -304,7 +306,7 @@ void onControlMessage(HWND hDialog, UINT message, UINT control) {
 				return;
 			}
 
-			listIndex = SendMessageW(list, LB_GETCURSEL, 0, 0);
+			listIndex = (int)SendMessageW(list, LB_GETCURSEL, 0, 0);
 			auto preset = getPreset(getSelectedPresetName(hDialog));
 			fillFromPreset(hDialog, preset);
 		}
@@ -352,14 +354,14 @@ void initDialog(HWND hDialog) {
 	for(const auto& presetName : getPresetNames()) {
 		SendMessageW(list, LB_ADDSTRING, 0, (LPARAM)presetName.c_str());
 	}
-	listIndex = SendMessageW(list, LB_ADDSTRING, 0, (LPARAM)L"(New preset)");
+	listIndex = (int)SendMessageW(list, LB_ADDSTRING, 0, (LPARAM)L"(New preset)");
 	SendMessageW(list, LB_SETCURSEL, listIndex, 0);
 
 	//clear the form
 	fillFromPreset(hDialog, Preset());
 }
 
-INT_PTR onDialogMessage(HWND hDialog, UINT message, WPARAM wParam, LPARAM lParam) {
+INT_PTR CALLBACK onDialogMessage(HWND hDialog, UINT message, WPARAM wParam, LPARAM lParam) {
 	switch(message) {
 	case WM_INITDIALOG:
 		initDialog(hDialog);

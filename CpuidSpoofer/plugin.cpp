@@ -26,13 +26,13 @@ std::unordered_map<duint, std::string> actions;
 bool onCpuidSpooferBegin(int argc, char** argv) {
 	duint cip = GetContextData(UE_CIP);
 	if(!checkCpuidAt(cip)) {
-		dprintf("Not a CPUID instruction on current address 0x%016llX!\n", cip);
+		dprintf("Not a CPUID instruction on current address " DUINT_FMT "!\n", cip);
 		return false;
 	}
 
 	auto actionIt = actions.find(cip);
 	if(actionIt != actions.cend()) {
-		dprintf("Overwriting previous stored action at address 0x%016llX!\n", cip);
+		dprintf("Overwriting previous stored action at address " DUINT_FMT "!\n", cip);
 		actions.erase(cip);
 	}
 
@@ -59,12 +59,12 @@ bool onCpuidSpooferBegin(int argc, char** argv) {
 bool onCpuidSpooferEnd(int argc, char** argv) {
 	duint prevCip = GetContextData(UE_CIP) - sizeof(cpuidBytes);
 	if(!checkCpuidAt(prevCip)) {
-		dprintf("Not a CPUID instruction on previous address 0x%016llX!\n", prevCip);
+		dprintf("Not a CPUID instruction on previous address " DUINT_FMT "!\n", prevCip);
 		return false;
 	}
 	auto actionIt = actions.find(prevCip);
 	if(actionIt == actions.cend()) {
-		dprintf("No action stored on previous address 0x%016llX!\n", prevCip);
+		dprintf("No action stored on previous address " DUINT_FMT "!\n", prevCip);
 		return false;
 	}
 
@@ -100,25 +100,25 @@ void pluginSetup() {
 void setBreakpoint(duint addr) {
 	char cmdBuffer[256];
 	//Create "begin" breakpoint
-	sprintf_s(cmdBuffer, "SetBPX 0x%016llX, \"" PLUGIN_NAME " 0x%016llX begin\"", addr, addr);
+	sprintf_s(cmdBuffer, "SetBPX " DUINT_FMT ", \"" PLUGIN_NAME " " DUINT_FMT " begin\"", addr, addr);
 	if(!DbgCmdExecDirect(cmdBuffer)) {
-		dprintf("Breakpoint on address 0x%016llX already set!\n", addr);
+		dprintf("Breakpoint on address " DUINT_FMT " already set!\n", addr);
 		return;
 	}
-	sprintf_s(cmdBuffer, "SetBreakpointCommand 0x%016llX, \"" COMMAND_BEGIN "\"", addr);
+	sprintf_s(cmdBuffer, "SetBreakpointCommand " DUINT_FMT ", \"" COMMAND_BEGIN "\"", addr);
 	DbgCmdExecDirect(cmdBuffer);
 
 	//Create "end" breakpoint
 	duint endAddr = addr + sizeof(cpuidBytes);
-	sprintf_s(cmdBuffer, "SetBPX 0x%016llX, \"" PLUGIN_NAME " 0x%016llX end\"", endAddr, addr);
+	sprintf_s(cmdBuffer, "SetBPX " DUINT_FMT ", \"" PLUGIN_NAME " " DUINT_FMT " end\"", endAddr, addr);
 	if(!DbgCmdExecDirect(cmdBuffer)) {
-		dprintf("Breakpoint on address 0x%016llX already set!\n", endAddr);
+		dprintf("Breakpoint on address " DUINT_FMT " already set!\n", endAddr);
 		//Delete "begin" breakpoint
-		sprintf_s(cmdBuffer, "DeleteBPX 0x%016llX", addr);
+		sprintf_s(cmdBuffer, "DeleteBPX " DUINT_FMT, addr);
 		DbgCmdExecDirect(cmdBuffer);
 		return;
 	}
-	sprintf_s(cmdBuffer, "SetBreakpointCommand 0x%016llX, \"" COMMAND_END "\"", endAddr);
+	sprintf_s(cmdBuffer, "SetBreakpointCommand " DUINT_FMT ", \"" COMMAND_END "\"", endAddr);
 	DbgCmdExecDirect(cmdBuffer);
 }
 
@@ -171,7 +171,7 @@ void setBreakpoints() {
 		for(duint pageAddr = baseAddr; pageAddr < baseAddr + page.mbi.RegionSize; pageAddr += pageBufferSize) {
 			auto memReadOk = DbgMemRead(pageAddr, pageBuffer, pageBufferSize);
 			if(!memReadOk) {
-				dprintf("Failed to read memory chunk 0x%016llX - 0x%016llX!\n", pageAddr, pageAddr + pageBufferSize);
+				dprintf("Failed to read memory chunk " DUINT_FMT " - " DUINT_FMT "!\n", pageAddr, pageAddr + pageBufferSize);
 				continue;
 			}
 			if(firstByteMatch + 1 == pageAddr && pageBuffer[0] == cpuidBytes[1]) {
@@ -196,7 +196,7 @@ void setBreakpoints() {
 void removeBreakpoints() {
 	char cmdBuffer[256];
 	for(duint addr : getKnownBreakpoints()) {
-		sprintf_s(cmdBuffer, "DeleteBPX 0x%016llX", addr);
+		sprintf_s(cmdBuffer, "DeleteBPX " DUINT_FMT, addr);
 		DbgCmdExecDirect(cmdBuffer);
 	}
 }

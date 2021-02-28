@@ -10,3 +10,9 @@
 bool pluginInit(PLUG_INITSTRUCT* initStruct);
 void pluginStop();
 void pluginSetup();
+
+#ifdef _WIN64
+#define DUINT_FMT "0x%016llX"
+#else
+#define DUINT_FMT "0x%016lX"
+#endif //_WIN64
