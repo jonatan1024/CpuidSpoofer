@@ -279,9 +279,17 @@ bool checkForChanges(HWND hDialog) {
 }
 
 void onControlMessage(HWND hDialog, UINT message, UINT control) {
-	if(control == IDCANCEL || control == IDOK) {
+	//cancel button
+	if(control == IDCANCEL) {
 		if(checkForChanges(hDialog))
 			EndDialog(hDialog, NULL);
+		return;
+	}
+	
+	//ok button
+	if(control == IDOK) {
+		storeDialogToPreset(hDialog);
+		EndDialog(hDialog, NULL);
 		return;
 	}
 
