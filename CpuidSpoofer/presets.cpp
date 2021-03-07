@@ -58,7 +58,7 @@ void loadPresets(const wchar_t* inFilename) {
 }
 
 void saveString(const std::wstring& string, FILE* file) {
-	int strlen = string.length();
+	int strlen = (int)string.length();
 	fwrite(&strlen, sizeof(strlen), 1, file);
 	fwrite(&string[0], sizeof(string[0]), strlen, file);
 }
@@ -89,7 +89,7 @@ void savePresets() {
 	if(file == NULL)
 		return;
 	fwrite(&fileVersion, sizeof(fileVersion), 1, file);
-	int numPresets = presets.size();
+	int numPresets = (int)presets.size();
 	fwrite(&numPresets, sizeof(numPresets), 1, file);
 	for(const auto& preset : presets) {
 		savePreset(preset, file);
@@ -137,10 +137,10 @@ bool deletePreset(const std::wstring& name) {
 }
 
 std::string wstringToString(const std::wstring& wstr) {
-	int len = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), wstr.length(), nullptr, 0, NULL, NULL);
+	int len = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), (int)wstr.length(), nullptr, 0, NULL, NULL);
 	std::string str;
 	str.resize(len);
-	WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), wstr.length(), &str[0], len, NULL, NULL);
+	WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), (int)wstr.length(), &str[0], len, NULL, NULL);
 	return str;
 }
 

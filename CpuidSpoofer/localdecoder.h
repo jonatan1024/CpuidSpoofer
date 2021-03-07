@@ -72,7 +72,7 @@ public:
 			steps++;
 		}
 		if(steps >= maxSteps) {
-			dprintf("Couldn't decide the decoding of an instuction at 0x%016llX after %d steps! Please inspect the breakpoint manually.\n", addr, steps);
+			dprintf("Couldn't decide the decoding of an instuction at " DUINT_FMT " after %d steps! Please inspect the breakpoint manually.\n", addr, steps);
 			return true;
 		}
 		return count[(int)PositionType::DESIRED] > 0;
