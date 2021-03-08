@@ -1,4 +1,7 @@
 # CPUID Spoofer
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/jonatan1024/CpuidSpoofer?label=Latest%20release)](https://github.com/jonatan1024/CpuidSpoofer/releases/latest)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/jonatan1024/CpuidSpoofer/MSBuild?label=MSBuild)](https://github.com/jonatan1024/CpuidSpoofer/actions/workflows/msbuild.yml)
+
 CpuidSpoofer is a [x64dbg](https://x64dbg.com/) plugin which helps you to modify the behaviour of the CPUID instruction.
 
 For example, you can easily change the *manufacturer ID string*:
